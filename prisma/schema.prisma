@@ -50,11 +50,13 @@ model UserGroup {
 }
 
 model Group {
-  id        String      @id @default(uuid()) @db.Uuid
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @default(now()) @updatedAt
-  deletedAt DateTime?
-  users     UserGroup[]
+  id          String      @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now()) @updatedAt
+  deletedAt   DateTime?
+  users       UserGroup[]
 }
 
 enum GroupRole {
