@@ -38,6 +38,7 @@ model UserGroup {
   id        Int       @id @default(autoincrement())
   userId    Int
   groupId   String    @db.Uuid
+  role      GroupRole
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime?
@@ -54,4 +55,9 @@ model Group {
   updatedAt DateTime    @default(now()) @updatedAt
   deletedAt DateTime?
   users     UserGroup[]
+}
+
+enum GroupRole {
+  ADMIN
+  INVITER
 }
