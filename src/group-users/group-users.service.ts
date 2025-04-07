@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateGroupUserDto } from './dto/create-group-user.dto';
-import { UpdateGroupUserDto } from './dto/update-group-user.dto';
+import { CreateGroupUserDto } from './dto/request/create-group-user.dto';
+import { UpdateGroupUserDto } from './dto/request/update-group-user.dto';
 import { GroupUser } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
@@ -9,39 +9,79 @@ import { UsersService } from '../users/users.service';
 export class GroupUsersService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly usersService: UsersService,
-  ) {}
-  create(createGroupUserDto: CreateGroupUserDto) {
-    return 'This action adds a new groupUser';
+    private readonly usersService: UsersService
+  ) {
   }
 
-  findAll() {
-    return `This action returns all groupUsers`;
+  public async create(groupId: string, dto: CreateGroupUserDto) {
+
+    return this.prismaService.groupUser.upsert({
+      where: {
+        userId_groupId: {
+          userId: dto.userId,
+          groupId
+        }
+      },
+      create: {
+        groupId,
+        ...dto
+      },
+      update: {
+        role: dto.role,
+        deletedAt: null
+      }
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} groupUser`;
+  public async findManyByGroupId(groupId: string): Promise<GroupUser[]> {
+    return this.prismaService.groupUser.findMany({
+      where: {
+        groupId
+      }
+    });
   }
 
-  update(id: number, updateGroupUserDto: UpdateGroupUserDto) {
-    return `This action updates a #${id} groupUser`;
+  public async findOne(id: number) {
+    return this.prismaService.groupUser.findUnique({
+      where: {
+        id,
+        deletedAt: null
+      }
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} groupUser`;
+  public async update(id: number, dto: UpdateGroupUserDto): Promise<GroupUser | null> {
+    return this.prismaService.groupUser.update({
+      where: {
+        id,
+        deletedAt: null
+      },
+      data: { ...dto }
+    });
+  }
+
+  public async remove(id: number) {
+    return this.prismaService.groupUser.update({
+      where: {
+        id
+      },
+      data: {
+        deletedAt: new Date()
+      }
+    });
   }
 
   public async findOneByGroupIdAndUserId(
     groupId: string,
-    userId: number,
+    userId: number
   ): Promise<GroupUser | null> {
     return this.prismaService.groupUser.findUnique({
       where: {
         userId_groupId: {
           userId,
-          groupId,
-        },
-      },
+          groupId
+        }
+      }
     });
   }
 }

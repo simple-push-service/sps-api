@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { GroupUsersService } from './group-users.service';
-import { CreateGroupUserDto } from './dto/create-group-user.dto';
-import { UpdateGroupUserDto } from './dto/update-group-user.dto';
+import { CreateGroupUserDto } from './dto/request/create-group-user.dto';
+import { UpdateGroupUserDto } from './dto/request/update-group-user.dto';
 
 @Controller('group-users')
 export class GroupUsersController {
