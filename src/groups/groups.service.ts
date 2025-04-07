@@ -19,40 +19,24 @@ export class GroupsService {
   ) {}
 
   public async create(dto: CreateGroupDto, user: User): Promise<Group> {
-    const users: (User | null)[] = await Promise.all(
-      dto.userIds.map((userId) => this.usersService.findOneById(userId)),
-    );
     return this.prismaService.$transaction(async (tx) => {
       const group = await tx.group.create({
         data: {
           ...dto,
         },
       });
-      const groupUsers = users
-        .filter((user) => user !== null)
-        .map((user) => {
-          return {
-            userId: user.id,
-            groupId: group.id,
-            role: GroupRole.INVITER,
-          };
-        });
-      const adminUser = {
-        userId: user.id,
-        groupId: group.id,
-        role: GroupRole.ADMIN,
-      };
-      await tx.groupUser.createMany({
-        data: groupUsers,
-      });
       await tx.groupUser.create({
-        data: adminUser,
+        data: {
+          userId: user.id,
+          groupId: group.id,
+          role: GroupRole.ADMIN,
+        },
       });
       return group;
     });
   }
 
-  public async findAll(user: User) {
+  public async findAllByUser(user: User) {
     return this.prismaService.group.findMany({
       where: {
         users: {
@@ -64,7 +48,7 @@ export class GroupsService {
     });
   }
 
-  public async findOne(id: string): Promise<Group | null> {
+  public async findOneById(id: string): Promise<Group | null> {
     return this.prismaService.group.findUnique({
       where: {
         id,
@@ -77,7 +61,7 @@ export class GroupsService {
     updateGroupDto: UpdateGroupDto,
     user: User,
   ): Promise<Group> {
-    const group = await this.findOne(id);
+    const group = await this.findOneById(id);
     if (!group) {
       throw new NotFoundException('Group not found');
     }

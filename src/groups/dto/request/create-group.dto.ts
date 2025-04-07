@@ -14,12 +14,4 @@ export class CreateGroupDto {
     })
     @IsString()
     description: string | null;
-
-    @ApiProperty({
-        description: '초대하는 유저들',
-        type: [Number],
-    })
-    @IsArray()
-    @IsNumber({}, { each: true })
-    userIds: number[]
 }
