@@ -22,7 +22,7 @@ model User {
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime?
 
-  groups         UserGroup[]
+  groups         GroupUser[]
   firebaseTokens FirebaseToken[]
 }
 
@@ -35,7 +35,7 @@ model FirebaseToken {
   user      User      @relation(fields: [id], references: [id])
 }
 
-model UserGroup {
+model GroupUser {
   id        Int       @id @default(autoincrement())
   userId    Int
   groupId   String    @db.Uuid
@@ -57,7 +57,7 @@ model Group {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @default(now()) @updatedAt
   deletedAt   DateTime?
-  users       UserGroup[]
+  users       GroupUser[]
 }
 
 enum GroupRole {
