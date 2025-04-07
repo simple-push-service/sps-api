@@ -7,10 +7,15 @@ import { GroupsModule } from './groups/groups.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { GroupUsersModule } from './group-users/group-users.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     CqrsModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     PrismaModule,
     GroupsModule,
     AuthModule,
