@@ -1,0 +1,11 @@
+{
+  "name": "sps-push",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "express": "^4.19.2",
+    "prisma": "^6.5.0",
+    "serverless-http": "^3.2.0"
+  }
+}
